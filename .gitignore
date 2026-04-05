@@ -1,0 +1,33 @@
+# Emacs auto-generated files
+*~
+*.elc
+*.eln
+auto-save-list/
+.cache/
+.last-package-update-day
+recentf
+bookmarks
+.org-id-locations
+.org-generic-id-locations
+history
+ido.last
+smex-items
+projectile-bookmarks.eld
+projectile.cache
+
+# Package directories
+elpa/
+eln-cache/
+var/
+.local/
+
+# OAuth/Sensitive files
+oauth2-auto.plist*
+.org-gcal-token
+.org-gcal/
+init-secrets.el
+
+# Transient state
+transient/
+url/
+eshell/
