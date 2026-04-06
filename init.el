@@ -47,6 +47,21 @@
       ;;plstore-cache-passphrase-for-symmetric-encryption t)
 (setenv "XDG_DATA_HOME" (expand-file-name "~/Documents/Org/.local/share"))
 
+
+;; ============================================================================
+;; GPG/OAUTH2 SETTINGS
+;; ============================================================================
+
+;; GPG/OAuth2 settings for org-gcal
+(setq plstore-encrypt-to '("ross@pearlstone.us"))
+(setq oauth2-token-file "~/Documents/Org/.oauth2-tokens.plist")
+(setenv "XDG_DATA_HOME" (expand-file-name "~/Documents/Org/.local/share"))
+
+;; Load local secrets EARLY (before packages that need them)
+(let ((secrets-file (expand-file-name "init-secrets.el" user-emacs-directory)))
+  (when (file-exists-p secrets-file)
+    (load secrets-file)))
+
 ;; ============================================================================
 ;; MACOS-SPECIFIC OPTIMIZATIONS
 ;; ============================================================================
@@ -721,10 +736,7 @@
 ;; ============================================================================
 
 (use-package org-gcal
-  :init
   ;; Credentials loaded from init-secrets.el (not tracked in git)
-  (setq org-gcal-client-id ""
-        org-gcal-client-secret "")
   :config
   (setq org-gcal-token-file "~/.emacs.d/.org-gcal-token"
         org-gcal-dir "~/.emacs.d/.org-gcal/"
@@ -734,9 +746,6 @@
         org-gcal-fetch-file-alist '(("ross@pearlstone.us" . "~/Documents/Org/gcal.org"))))
 
 ;; Load local secrets (credentials, API keys, etc.)
-(let ((secrets-file (expand-file-name "init-secrets.el" user-emacs-directory)))
-  (when (file-exists-p secrets-file)
-    (load secrets-file)))
 
 
 ;;=============================================================================
