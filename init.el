@@ -1,7 +1,8 @@
 ;;; init.el --- Emacs Configuration -*- lexical-binding: t; -*-
 
 ;;; Commentary:
-;; Personal Emacs configuration for macOS
+;; Personal Emacs configuration
+;; Cross-platform: macOS and Linux (Aurora/Fedora)
 ;; Optimized for org-mode and Rust development
 
 ;;; Code:
@@ -31,24 +32,6 @@
 (setq use-package-always-ensure t)
 
 ;; ============================================================================
-;; MACOS-GPG CODE FOR MANAGING KEYS AND PASSPHRASE
-;; ============================================================================
-;; GPG Pinentry passphrase for minibuffer
-;;(use-package pinentry
-  ;;:config
-  ;;(pinentry-start))
-
-(setq delete-by-moving-to-trash t)
-;; GPG/OAuth2 settings for org-gcal
-(setq plstore-encrypt-to '("ross@pearlstone.us"))  ; Your GPG key email
-
-;;(setq plstore-encrypt-to nil)
-(setq oauth2-token-file "~/Documents/Org/.oauth2-tokens.plist")
-      ;;plstore-cache-passphrase-for-symmetric-encryption t)
-(setenv "XDG_DATA_HOME" (expand-file-name "~/Documents/Org/.local/share"))
-
-
-;; ============================================================================
 ;; GPG/OAUTH2 SETTINGS
 ;; ============================================================================
 
@@ -63,11 +46,10 @@
     (load secrets-file)))
 
 ;; ============================================================================
-;; MACOS-SPECIFIC OPTIMIZATIONS
+;; PLATFORM-SPECIFIC OPTIMIZATIONS
 ;; ============================================================================
 
-
- ;; AFTER (cross-platform):
+;; Scrolling and display (cross-platform)
 (setq scroll-conservatively 10
       scroll-margin 3
       scroll-preserve-screen-position t
@@ -77,14 +59,10 @@
       frame-resize-pixelwise t
       window-resize-pixelwise t)
 
-;; Trash directory - platform specific
-(cond
- ((eq system-type 'darwin)
+;; Trash handling
+(setq delete-by-moving-to-trash t)
+(when (eq system-type 'darwin)
   (setq trash-directory "~/.Trash"))
- ((eq system-type 'gnu/linux)
-  (setq delete-by-moving-to-trash t)))  ; Uses XDG trash 
-  ;; Prevent flickering
-;;  (add-to-list 'default-frame-alist '(inhibit-double-buffering . t)))
 
 ;; ============================================================================
 ;; UI CONFIGURATION
@@ -96,12 +74,11 @@
       ring-bell-function 'ignore
       confirm-kill-emacs 'yes-or-no-p)
 
-;; Font - Menlo for macOS (better than JetBrains Mono on Retina)
-(set-face-attribute 'default nil :family "Menlo" :height 130)
-;; AFTER:
+;; Font - platform specific
 (set-face-attribute 'default nil 
   :family (cond ((eq system-type 'darwin) "Menlo")
-                ((eq system-type 'gnu/linux) "DejaVu Sans Mono"))
+                ((eq system-type 'gnu/linux) "DejaVu Sans Mono")
+                (t "Monospace"))
   :height 130)
 
 ;; UI cleanup
@@ -117,45 +94,6 @@
 
 ;; Add left padding for breathing room
 (setq-default left-fringe-width 16)
-
-;; Consistent line number styling (prevents jiggling)
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(calfw-annotation-face ((t (:foreground "#5B6268" :slant italic))))
- '(calfw-day-title-face ((t (:background "#21242b"))))
- '(calfw-default-content-face ((t (:foreground "#c678dd" :background nil))))
- '(calfw-default-day-face ((t (:weight bold))))
- '(calfw-disable-face ((t (:foreground "#3f444a"))))
- '(calfw-grid-face ((t (:foreground "#3f444a"))))
- '(calfw-header-face ((t (:foreground "#98be65" :weight bold))))
- '(calfw-holiday-face ((t (:foreground "#ECBE7B" :weight bold))))
- '(calfw-periods-face ((t (:foreground "#c678dd" :background nil))))
- '(calfw-saturday-face ((t (:foreground "#c678dd" :weight bold))))
- '(calfw-sunday-face ((t (:foreground "#ff6c6b" :weight bold))))
- '(calfw-title-face ((t (:foreground "#51afef" :weight bold :height 2.0))))
- '(calfw-today-face ((t (:background "#2d333f" :weight bold))))
- '(calfw-today-title-face ((t (:background "#46D9FF" :foreground "#282c34" :weight bold))))
- '(calfw-toolbar-button-off-face ((t (:foreground "#5B6268"))))
- '(calfw-toolbar-button-on-face ((t (:foreground "#51afef" :weight bold))))
- '(calfw-toolbar-face ((t (:background "#21242b" :foreground "#51afef"))))
- '(cursor ((t (:background "#ff8c00"))))
- '(line-number ((t (:inherit default :foreground "#3E4451"))))
- '(line-number-current-line ((t (:foreground "#ff8c00" :weight normal))))
- '(org-code ((t (:foreground "#d0b03d" :weight normal))))
- '(org-date-selected ((t (:height 1.4 :foreground "light blue" :weight bold))))
- '(org-document-title ((t (:height 1.8 :weight bold :foreground "#BEA4DB"))))
- '(org-level-1 ((t (:inherit outline-1 :height 1.5 :weight extrabold :foreground "#d6837c"))))
- '(org-level-2 ((t (:inherit outline-2 :height 1.4 :weight bold :foreground "#8dcff0"))))
- '(org-level-3 ((t (:inherit outline-3 :height 1.3 :weight normal :foreground "#d555e0"))))
- '(org-level-4 ((t (:inherit outline-4 :height 1.2 :weight normal :foreground "#ff665c"))))
- '(org-level-5 ((t (:inherit outline-5 :height 1.1 :weight normal :foreground "#ababff"))))
- '(org-level-6 ((t (:inherit outline-6 :height 1.0 :weight normal :foreground "#5e65cc"))))
- '(org-level-7 ((t (:inherit outline-7 :height 1.0 :weight normal :foreground "#2843fb"))))
- '(org-level-8 ((t (:height 1.0 :weight normal :foreground "#ECBE7B"))))
- '(org-quote ((t (:foreground "#66b4e3" :slant italic)))))
 
 ;; ============================================================================
 ;; EDITING BEHAVIOR
@@ -175,9 +113,8 @@
 (global-prettify-symbols-mode 1)
 
 ;; ============================================================================
-;; SECURITY & CREDENTIALS
+;; PATH CONFIGURATION
 ;; ============================================================================
-
 
 ;; Path to main config file (for SPC f e)
 (defvar my/config-file (expand-file-name "init.el" user-emacs-directory)
@@ -209,7 +146,7 @@
   (setq which-key-idle-delay 0.3)
   :config
   (which-key-mode)
-  (setq which-key-compute-remaps nil)  ; Add this
+  (setq which-key-compute-remaps nil)
   (which-key-setup-side-window-bottom))
 
 ;; ============================================================================
@@ -235,7 +172,6 @@
   (evil-collection-define-key 'normal 'dired-mode-map
     "o" 'dired-find-file-other-window))
 
-
 (use-package evil-surround
   :after evil
   :demand t
@@ -245,6 +181,7 @@
 ;; ============================================================================
 ;; KEYBINDINGS (GENERAL)
 ;; ============================================================================
+
 (use-package general
   :config
   (general-create-definer my/leader-keys
@@ -253,12 +190,11 @@
     :global-prefix "C-SPC")
   
   (my/leader-keys
-    ;; Files
-
-;; Add search under a different key
+    ;; Search
     "/"   '(consult-line :which-key "search buffer")
     "?"   '(consult-ripgrep :which-key "search project")
     
+    ;; Files
     "f"   '(:ignore t :which-key "file")
     "ff"  '(find-file :which-key "find file")
     "fs"  '(save-buffer :which-key "save file")
@@ -268,14 +204,14 @@
  
     ;; Buffers
     "b"   '(:ignore t :which-key "buffer")
-    ;;"bb"  '(switch-to-buffer :which-key "switch buffer")
     "bb"  '(consult-buffer :which-key "switch buffer")
     "bk"  '(kill-current-buffer :which-key "kill buffer")
     
+    ;; Jump
     "j"   '(:ignore t :which-key "jump")
-    "ji"  '(consult-imenu :which-key "jump to symbol")  ; Add this
+    "ji"  '(consult-imenu :which-key "jump to symbol")
     "jj"  '(avy-goto-char-timer :which-key "jump to char")
-    "jl"  '(consult-goto-line :which-key "jump to line")   ; Changed from avy-goto-line
+    "jl"  '(consult-goto-line :which-key "jump to line")
     "jw"  '(avy-goto-word-1 :which-key "jump to word")
 
     ;; Help/Reload
@@ -373,11 +309,25 @@
     "sn"  '(yas-new-snippet :which-key "new snippet")
     "sv"  '(yas-visit-snippet-file :which-key "visit snippet file")
  
+;; Terminal
+    "t"   '(:ignore t :which-key "terminal")
+    "tt"  '(vterm :which-key "vterm")
+    "tT"  '(vterm-other-window :which-key "vterm other window")
+
+    ;; Markdown
+    "m"   '(:ignore t :which-key "markdown")
+    "mp"  '(markdown-preview-mode :which-key "preview")
+    "mt"  '(markdown-toggle-markup-hiding :which-key "toggle markup")
     ;; Errors (Flymake/LSP)
     "e"   '(:ignore t :which-key "errors")
     "en"  '(flymake-goto-next-error :which-key "next error")
     "ep"  '(flymake-goto-prev-error :which-key "prev error")
-    "el"  '(flymake-show-buffer-diagnostics :which-key "list errors")))
+    "el"  '(flymake-show-buffer-diagnostics :which-key "list errors")
+    
+    ;; Terminal
+    "t"   '(:ignore t :which-key "terminal")
+    "tt"  '(vterm :which-key "vterm")
+    "tT"  '(vterm-other-window :which-key "vterm other window")))
 
 ;; ============================================================================
 ;; COMPLETION FRAMEWORK (VERTICO + ORDERLESS + MARGINALIA)
@@ -390,7 +340,6 @@
   (setq vertico-count 10
         vertico-resize t
         vertico-cycle t)
-  ;; Clean up file path shadowing
   (add-hook 'rfn-eshadow-update-overlay-hook #'vertico-directory-tidy))
 
 (use-package orderless
@@ -434,7 +383,6 @@
         company-selection-wrap-around t
         company-transformers '(company-sort-prefer-same-case-prefix))
   
-  ;; Prioritize LSP completions, merge with yasnippet
   (setq company-backends '((company-capf :with company-yasnippet)
                            (company-dabbrev-code company-keywords company-files)
                            (company-dabbrev)))
@@ -473,37 +421,53 @@
 (use-package magit)
 
 ;; ============================================================================
-;; RUST DEVELOPMENT
+;; AVY (JUMP NAVIGATION)
 ;; ============================================================================
-
-;; Add Rust tools to PATH (if installed in ~/.cargo/bin)
-(when (eq system-type 'darwin)
-(setenv "PATH" (concat (getenv "HOME") "/.cargo/bin:" (getenv "PATH")))
-(add-to-list 'exec-path (concat (getenv "HOME") "/.cargo/bin")))
-
-
 
 (use-package avy
   :config
-  (setq avy-background t)
-  (setq avy-style 'at-full))
+  (setq avy-background t
+        avy-style 'at-full))
 
+;; ============================================================================
+;; CONSULT (ENHANCED SEARCH)
+;; ============================================================================
+
+(use-package consult
+  :bind (("C-s" . consult-line))
+  :config
+  (setq consult-preview-key 'any))
+
+;; ============================================================================
+;; VTERM (TERMINAL EMULATOR)
+;; ============================================================================
+
+(use-package vterm
+  :config
+  (setq vterm-max-scrollback 10000
+        vterm-kill-buffer-on-exit t))
+
+;; ============================================================================
+;; RUST DEVELOPMENT
+;; ============================================================================
+
+;; Add Rust tools to PATH on macOS (handled by distrobox on Linux)
+(when (eq system-type 'darwin)
+  (setenv "PATH" (concat (getenv "HOME") "/.cargo/bin:" (getenv "PATH")))
+  (add-to-list 'exec-path (concat (getenv "HOME") "/.cargo/bin")))
 
 ;; Eglot (built-in LSP client)
 (use-package eglot
   :ensure nil
   :config
-  ;; Eldoc (documentation display) settings
   (setq eldoc-echo-area-display-truncation-message nil
         eldoc-echo-area-use-multiline-p 4
         eldoc-echo-area-prefer-doc-buffer t
         eldoc-idle-delay 0.1
         eldoc-documentation-strategy #'eldoc-documentation-default)
   
-  ;; Enable inlay hints (type annotations)
   (add-hook 'eglot-managed-mode-hook #'eglot-inlay-hints-mode)
   
-  ;; Configure rust-analyzer for both rust-mode and rust-ts-mode
   (setq eglot-server-programs
         (cons '((rust-mode rust-ts-mode) . 
                 ("rust-analyzer" :initializationOptions
@@ -521,7 +485,6 @@
   :config
   (eglot-booster-mode))
 
-;; Rust mode
 (use-package rust-mode
   :demand t
   :init
@@ -531,19 +494,12 @@
   :config
   (setq rust-format-on-save t))
 
-;; Tree-sitter auto-install
 (use-package treesit-auto
   :config
   (global-treesit-auto-mode))
 
-;; Cargo integration
 (use-package cargo
   :hook (rust-mode . cargo-minor-mode))
-
-(use-package consult
-  :bind (("C-s" . consult-line))
-  :config
-  (setq consult-preview-key 'any))
 
 ;; ============================================================================
 ;; DOC-VIEW (PDFs)
@@ -574,21 +530,17 @@
    "K" 'doc-view-previous-page
    "q" 'quit-window))
 
-
 ;; ============================================================================
 ;; ORG MODE
 ;; ============================================================================
 
-
-
 (use-package org
   :ensure nil
   :init
-(with-eval-after-load 'org
-  (setq org-todo-keywords
-      '((sequence "PROJ(p)" "IN-PROGRESS(i@)" "TODO(t)" "WAIT(w@/!)" "|" "RESCHEDULE(r)" "DONE(d!)" "CANCELED(c@)"))))
+  (with-eval-after-load 'org
+    (setq org-todo-keywords
+          '((sequence "PROJ(p)" "IN-PROGRESS(i@)" "TODO(t)" "WAIT(w@/!)" "|" "RESCHEDULE(r)" "DONE(d!)" "CANCELED(c@)"))))
   
-  ;; Tags
   (setq org-tag-alist '(("@work" . ?w)
                         ("@home" . ?h)
                         ("@flight" . ?f)
@@ -597,11 +549,9 @@
                         ("urgent" . ?u)
                         ("PROJ" . ?p)))
   :config
-  ;; Directory and file settings
   (setq org-directory "~/Documents/Org"
         org-agenda-files (directory-files-recursively "~/Documents/Org/" "\\.org$"))
   
-  ;; Clean up agenda files list (remove non-org-directory files)
   (defun my/keep-agenda-files-clean ()
     "Ensure only files in org-directory are in org-agenda-files."
     (setq org-agenda-files 
@@ -611,37 +561,27 @@
                       org-agenda-files)))
   (add-hook 'org-agenda-mode-hook #'my/keep-agenda-files-clean)
   
-  (setq org-M-RET-may-split-line '((default . nil)))
-  (setq org-insert-heading-respect-content t)
-  (setq org-log-done 'time)
-  (setq org-agenda-show-current-time-in-grid t)
-  (setq org-deadline-warning-days 5)
-
-
-  ;; Agenda and calendar settings
-  (setq calendar-mark-diary-entries-flag t
+  (setq org-M-RET-may-split-line '((default . nil))
+        org-insert-heading-respect-content t
+        org-log-done 'time
+        org-agenda-show-current-time-in-grid t
+        org-deadline-warning-days 5
+        calendar-mark-diary-entries-flag t
         org-agenda-include-diary t
         cfw:org-agenda-schedule-args '(:scheduled :deadline :timestamp :sexp :todo)
         org-agenda-span 10
         org-agenda-start-day "-3d"
-        org-agenda-start-on-weekday nil)
-  
-  ;; Display settings
-  (setq org-startup-indented t
+        org-agenda-start-on-weekday nil
+        org-startup-indented t
         org-hide-emphasis-markers t
         org-image-actual-width nil
         org-tags-column -77
-        org-use-tag-inheritance t)
-
-  (setq org-log-into-drawer t)
-
-  
-  ;; Refile settings (refile to any agenda file, up to 2 levels deep)
-  (setq org-refile-targets '((org-agenda-files :maxlevel . 2))
+        org-use-tag-inheritance t
+        org-log-into-drawer t
+        org-refile-targets '((org-agenda-files :maxlevel . 2))
         org-refile-use-outline-path 'file
         org-refile-allow-creating-parent-nodes 'confirm)
   
-  ;; Capture templates
   (setq org-capture-templates
         '(("t" "Todo" entry
            (file+headline "~/Documents/Org/inbox.org" "Inbox")
@@ -693,22 +633,7 @@
           ("n" "Note" entry
            (file+headline "~/Documents/Org/notes.org" "Notes")
            "* [%<%Y-%m-%d %a>] %^{Title}\n:PROPERTIES:\n:CREATED: %U\n:END:\n%?"
-           :prepend t)))
-  
-  ;; Org heading custom faces
-  (custom-set-faces
-   '(org-level-1 ((t (:inherit outline-1 :height 1.5 :weight extrabold :foreground "#d6837c"))))
-   '(org-level-2 ((t (:inherit outline-2 :height 1.4 :weight bold :foreground "#8dcff0"))))
-   '(org-level-3 ((t (:inherit outline-3 :height 1.3 :weight normal :foreground "#d555e0"))))
-   '(org-level-4 ((t (:inherit outline-4 :height 1.2 :weight normal :foreground "#ff665c"))))
-   '(org-level-5 ((t (:inherit outline-5 :height 1.1 :weight normal :foreground "#ababff"))))
-   '(org-level-6 ((t (:inherit outline-6 :height 1.0 :weight normal :foreground "#5e65cc"))))
-   '(org-level-7 ((t (:inherit outline-7 :height 1.0 :weight normal :foreground "#2843fb"))))
-   '(org-level-8 ((t (:height 1.0 :weight normal :foreground "#ECBE7B"))))
-   '(org-document-title ((t (:height 1.8 :weight bold :foreground "#BEA4DB"))))
-   '(org-code ((t (:foreground "#d0b03d" :weight normal))))
-   '(org-quote ((t (:foreground "#66b4e3" :slant italic))))
-   '(org-date-selected ((t (:height 1.4 :foreground "light blue" :weight bold))))))
+           :prepend t))))
 
 (use-package evil-org
   :after org
@@ -722,6 +647,7 @@
   :config
   (setq org-modern-label-border 3
         org-modern-star '("◉" "○" "◈" "◇" "✳")
+        org-modern-list '((?- . "•") (?+ . "◦") (?* . "▸"))
         org-modern-table nil
         org-modern-timestamp nil))
 
@@ -730,13 +656,14 @@
   :custom
   (org-contacts-files '("~/Documents/Org/contacts.org")))
 
+(add-hook 'org-mode-hook 'visual-line-mode)
 
 ;; ============================================================================
 ;; GOOGLE CALENDAR INTEGRATION
 ;; ============================================================================
 
 (use-package org-gcal
-  ;; Credentials loaded from init-secrets.el (not tracked in git)
+  ;; Credentials loaded from init-secrets.el
   :config
   (setq org-gcal-token-file "~/.emacs.d/.org-gcal-token"
         org-gcal-dir "~/.emacs.d/.org-gcal/"
@@ -745,12 +672,10 @@
         org-gcal-down-days 30
         org-gcal-fetch-file-alist '(("ross@pearlstone.us" . "~/Documents/Org/gcal.org"))))
 
-;; Load local secrets (credentials, API keys, etc.)
-
-
-;;=============================================================================
+;; ============================================================================
 ;; ORG-ROAM
-;;=============================================================================
+;; ============================================================================
+
 (use-package org-roam
   :ensure t
   :custom
@@ -771,10 +696,6 @@
     (kill-current-buffer)
     (org-roam-db-sync)))
 
-(add-hook 'org-mode-hook 'visual-line-mode)
-
-
-
 ;; ============================================================================
 ;; CALENDAR (CALFW)
 ;; ============================================================================
@@ -784,26 +705,26 @@
 
 (use-package calfw-org
   :demand t
-  :after calfw
+  :after calfw)
+
+;; ============================================================================
+;; MARKDOWN
+;; ============================================================================
+
+(use-package markdown-mode
+  :mode ("\\.md\\'" . markdown-mode)
   :config
-  (custom-set-faces
-   '(calfw-title-face ((t (:foreground "#51afef" :weight bold :height 2.0))))
-   '(calfw-header-face ((t (:foreground "#98be65" :weight bold))))
-   '(calfw-sunday-face ((t (:foreground "#ff6c6b" :weight bold))))
-   '(calfw-saturday-face ((t (:foreground "#c678dd" :weight bold))))
-   '(calfw-holiday-face ((t (:foreground "#ECBE7B" :weight bold))))
-   '(calfw-grid-face ((t (:foreground "#3f444a"))))
-   '(calfw-day-title-face ((t (:background "#21242b"))))
-   '(calfw-default-day-face ((t (:weight bold))))
-   '(calfw-default-content-face ((t (:foreground "#c678dd" :background nil))))
-   '(calfw-periods-face ((t (:foreground "#c678dd" :background nil))))
-   '(calfw-annotation-face ((t (:foreground "#5B6268" :slant italic))))
-   '(calfw-disable-face ((t (:foreground "#3f444a"))))
-   '(calfw-today-title-face ((t (:background "#46D9FF" :foreground "#282c34" :weight bold))))
-   '(calfw-today-face ((t (:background "#2d333f" :weight bold))))
-   '(calfw-toolbar-face ((t (:background "#21242b" :foreground "#51afef"))))
-   '(calfw-toolbar-button-off-face ((t (:foreground "#5B6268"))))
-   '(calfw-toolbar-button-on-face ((t (:foreground "#51afef" :weight bold))))))
+  (setq markdown-fontify-code-blocks-natively t))
+
+(use-package markdown-preview-mode)
+
+(use-package olivetti
+  :hook (markdown-mode . olivetti-mode)
+  :config
+  (setq olivetti-body-width 100))
+
+(use-package mixed-pitch
+  :hook (markdown-mode . mixed-pitch-mode))
 
 ;; ============================================================================
 ;; FILE BROWSER (DIRED)
@@ -814,7 +735,6 @@
 
 (use-package all-the-icons-dired)
 
-;; Dired configuration - icons + hide details
 (add-hook 'dired-mode-hook
           (lambda ()
             (all-the-icons-dired-mode 1)
@@ -834,18 +754,82 @@
 
 ;;; init.el ends here
 
+;; ============================================================================
+;; CUSTOM FACES (Auto-generated - keep at end)
+;; ============================================================================
+
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(calfw-annotation-face ((t (:foreground "#5B6268" :slant italic))))
+ '(calfw-day-title-face ((t (:background "#21242b"))))
+ '(calfw-default-content-face ((t (:foreground "#c678dd" :background nil))))
+ '(calfw-default-day-face ((t (:weight bold))))
+ '(calfw-disable-face ((t (:foreground "#3f444a"))))
+ '(calfw-grid-face ((t (:foreground "#3f444a"))))
+ '(calfw-header-face ((t (:foreground "#98be65" :weight bold))))
+ '(calfw-holiday-face ((t (:foreground "#ECBE7B" :weight bold))))
+ '(calfw-periods-face ((t (:foreground "#c678dd" :background nil))))
+ '(calfw-saturday-face ((t (:foreground "#c678dd" :weight bold))))
+ '(calfw-sunday-face ((t (:foreground "#ff6c6b" :weight bold))))
+ '(calfw-title-face ((t (:foreground "#51afef" :weight bold :height 2.0))))
+ '(calfw-today-face ((t (:background "#2d333f" :weight bold))))
+ '(calfw-today-title-face ((t (:background "#46D9FF" :foreground "#282c34" :weight bold))))
+ '(calfw-toolbar-button-off-face ((t (:foreground "#5B6268"))))
+ '(calfw-toolbar-button-on-face ((t (:foreground "#51afef" :weight bold))))
+ '(calfw-toolbar-face ((t (:background "#21242b" :foreground "#51afef"))))
+ '(cursor ((t (:background "#ff8c00"))))
+ '(line-number ((t (:inherit default :foreground "#3E4451"))))
+ '(line-number-current-line ((t (:foreground "#ff8c00" :weight normal))))
+ '(org-code ((t (:foreground "#d0b03d" :weight normal))))
+ '(org-date-selected ((t (:height 1.4 :foreground "light blue" :weight bold))))
+ '(org-document-title ((t (:height 1.8 :weight bold :foreground "#BEA4DB"))))
+ '(org-level-1 ((t (:inherit outline-1 :height 1.5 :weight extrabold :foreground "#d6837c"))))
+ '(org-level-2 ((t (:inherit outline-2 :height 1.4 :weight bold :foreground "#8dcff0"))))
+ '(org-level-3 ((t (:inherit outline-3 :height 1.3 :weight normal :foreground "#d555e0"))))
+ '(org-level-4 ((t (:inherit outline-4 :height 1.2 :weight normal :foreground "#ff665c"))))
+ '(org-level-5 ((t (:inherit outline-5 :height 1.1 :weight normal :foreground "#ababff"))))
+ '(org-level-6 ((t (:inherit outline-6 :height 1.0 :weight normal :foreground "#5e65cc"))))
+ '(org-level-7 ((t (:inherit outline-7 :height 1.0 :weight normal :foreground "#2843fb"))))
+ '(org-level-8 ((t (:height 1.0 :weight normal :foreground "#ECBE7B"))))
+ '(org-quote ((t (:foreground "#66b4e3" :slant italic))))
+ '(org-scheduled ((t (:foreground "#51afef"))))
+ '(org-scheduled-today ((t (:foreground "#98be65" :weight bold))))
+ '(org-scheduled-previously ((t (:foreground "#ff6c6b" ))))  ; Burnt orange/pink
+ '(org-upcoming-deadline ((t (:foreground "#ECBE7B"))))  ; Yellow (upcoming)
+ '(org-warning ((t (:foreground "#d6837c" )))))  ; Burnt orange for overdue deadlines
+
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(org-agenda-files
+   '("/Users/rosspearlstone/Documents/Org/bookmarks.org"
+     "/Users/rosspearlstone/Documents/Org/calendar.org"
+     "/Users/rosspearlstone/Documents/Org/contacts.org"
+     "/Users/rosspearlstone/Documents/Org/done.org"
+     "/Users/rosspearlstone/Documents/Org/gcal.org"
+     "/Users/rosspearlstone/Documents/Org/general.org"
+     "/Users/rosspearlstone/Documents/Org/health.org"
+     "/Users/rosspearlstone/Documents/Org/ideas.org"
+     "/Users/rosspearlstone/Documents/Org/inbox.org"
+     "/Users/rosspearlstone/Documents/Org/journal.org"
+     "/Users/rosspearlstone/Documents/Org/notes.org"
+     "/Users/rosspearlstone/Documents/Org/projects.org"
+     "/Users/rosspearlstone/Documents/Org/rosspearl-gcal.org"
+     "/Users/rosspearlstone/Documents/Org/todo.org"
+     "/Users/rosspearlstone/Documents/Org/travel.org"))
  '(package-selected-packages
    '(all-the-icons-dired avy calfw-org cargo company-box consult
 			 dashboard doom-modeline doom-themes
 			 eglot-booster evil-collection evil-org
 			 evil-surround general magit marginalia
+			 markdown-preview-mode mixed-pitch olivetti
 			 orderless org-contacts org-gcal org-modern
-			 org-roam pinentry rust-mode treesit-auto
-			 vertico yasnippet-snippets))
+			 org-roam rust-mode treesit-auto vertico vterm
+			 yasnippet-snippets))
  '(package-vc-selected-packages
    '((eglot-booster :url "https://github.com/jdtsmith/eglot-booster"))))
