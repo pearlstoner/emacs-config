@@ -327,7 +327,14 @@
     ;; Terminal
     "t"   '(:ignore t :which-key "terminal")
     "tt"  '(vterm :which-key "vterm")
-    "tT"  '(vterm-other-window :which-key "vterm other window")))
+    "tT"  '(vterm-other-window :which-key "vterm other window")
+
+    "w"   '(:ignore t :which-key "window")
+    "ww"  '(evil-window-next :which-key "window next")
+    "wl"  '(evil-window-right :which-key "window right")
+    "wh"  '(evil-window-left :which-key "window left")
+    "wj"  '(evil-window-down :which-key "window down")
+    "wk"  '(evil-window-up :which-key "window up")))
 
 ;; ============================================================================
 ;; COMPLETION FRAMEWORK (VERTICO + ORDERLESS + MARGINALIA)
