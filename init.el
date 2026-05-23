@@ -1,4 +1,4 @@
-;:q;; init.el --- Emacs Configuration -*- lexical-binding: t; -*-
+;;; init.el --- Emacs Configuration -*- lexical-binding: t; -*-
 
 ;;; Commentary:
 ;; Personal Emacs configuration
@@ -47,8 +47,8 @@
 
 ;; Load local secrets EARLY (before packages that need them)
 (let ((secrets-file (expand-file-name "init-secrets.el" user-emacs-directory)))
-
-    (load secrets-file) )
+  (when (file-exists-p secrets-file)
+    (load secrets-file)))
 
 ;; ============================================================================
 ;; PLATFORM-SPECIFIC OPTIMIZATIONS
@@ -158,10 +158,13 @@
 ;; EVIL MODE (VIM EMULATION)
 ;; ============================================================================
 
+(use-package undo-fu)
+
 (use-package evil
   :init
   (setq evil-want-integration t
-        evil-want-keybinding nil)
+        evil-want-keybinding nil
+        evil-undo-system 'undo-fu)
   :config
   (evil-mode 1))
 
@@ -327,9 +330,8 @@
     "t"   '(:ignore t :which-key "terminal")
     "tt"  '(vterm :which-key "vterm")
     "tT"  '(vterm-other-window :which-key "vterm other window")
-<<<<<<< HEAD
-
-;; Window management
+    
+    ;; Window management
     "w"   '(:ignore t :which-key "window")
     "wh"  '(evil-window-left :which-key "left")
     "wj"  '(evil-window-down :which-key "down")
@@ -342,8 +344,6 @@
     "wd"  '(evil-window-delete :which-key "delete")
     "wo"  '(delete-other-windows :which-key "delete others")
     "w="  '(balance-windows :which-key "balance")
-=======
->>>>>>> 168b1fc (Changed todo to incorporate a scheduel)
     
     ;; Markdown
     "m"   '(:ignore t :which-key "markdown")
@@ -574,24 +574,19 @@
    "G" 'pdf-view-last-page
    "q" 'quit-window))
 
-
-;; Force reset org-todo and org-done faces
-(set-face-attribute 'org-todo nil :foreground 'unspecified :weight 'normal)
-(set-face-attribute 'org-done nil :foreground 'unspecified :weight 'normal)
-
-;; Custom TODO keyword colors (add this in org-mode config, NOT custom-set-faces)
-(setq org-todo-keyword-faces
-      '(("TODO" . (:foreground "#ff6c6b" :weight bold))
-        ("IN-PROGRESS" . (:foreground "#51afef" :weight bold))   ; Cyan
-        ("PROJ" . (:foreground "#c678dd" :weight bold))          ; Purple
-        ("WAIT" . (:foreground "#ECBE7B" :weight bold))          ; Yellow
-        ("DONE" . (:foreground "#98be65" :weight bold))          ; Green
-        ("CANCELED" . (:foreground "#5B6268" :weight bold))      ; Gray
-        ("RESCHEDULE" . (:foreground "#da8548" :weight bold))))  ; Orange
-
 ;; ============================================================================
 ;; ORG MODE
 ;; ============================================================================
+
+;; Custom TODO keyword colors
+(setq org-todo-keyword-faces
+      '(("TODO" . (:foreground "#ff6c6b" :weight bold))
+        ("IN-PROGRESS" . (:foreground "#51afef" :weight bold))
+        ("PROJ" . (:foreground "#c678dd" :weight bold))
+        ("WAIT" . (:foreground "#ECBE7B" :weight bold))
+        ("DONE" . (:foreground "#98be65" :weight bold))
+        ("CANCELED" . (:foreground "#5B6268" :weight bold))
+        ("RESCHEDULE" . (:foreground "#da8548" :weight bold))))
 
 (use-package org
   :ensure nil
@@ -644,7 +639,7 @@
   (setq org-capture-templates
         '(("t" "Todo" entry
            (file+headline "~/Documents/Org/inbox.org" "Inbox")
-           "* TODO %^{Task}\nSCHEDULED: %^{Scheduled}T:PROPERTIES:\n:CREATED: %a\n:END:\n%?")
+           "* TODO %^{Task}\nSCHEDULED: %^{Scheduled}T\n:PROPERTIES:\n:CREATED: %U\n:CAPTURED: %a\n:END:\n%?")
           
           ("v" "Travel" entry
            (file+headline "~/Documents/Org/travel.org" "Travel")
@@ -700,7 +695,6 @@
   :config
   (evil-org-set-key-theme '(navigation insert textobjects additional calendar)))
 
-
 (use-package org-modern
   :hook ((org-mode . org-modern-mode)
          (org-agenda-finalize . org-modern-agenda))
@@ -710,10 +704,7 @@
         org-modern-list '((?- . "•") (?+ . "◦") (?* . "▸"))
         org-modern-table nil
         org-modern-timestamp nil
-        org-modern-todo nil))  ; <- ADD THIS - disables org-modern TODO styling
-
-
-  
+        org-modern-todo nil))
 
 (use-package org-contacts
   :after org
@@ -827,6 +818,10 @@
 
 ;;; init.el ends here
 
+;; ============================================================================
+;; CUSTOM FACES (Auto-generated - keep at end)
+;; ============================================================================
+
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -864,53 +859,15 @@
  '(org-level-7 ((t (:inherit outline-7 :height 1.0 :weight normal :foreground "#2843fb"))))
  '(org-level-8 ((t (:height 1.0 :weight normal :foreground "#ECBE7B"))))
  '(org-quote ((t (:foreground "#66b4e3" :slant italic))))
-<<<<<<< HEAD
  '(org-scheduled ((t (:foreground "#567FF0"))))
  '(org-scheduled-previously ((t (:inherit default))))
- '(org-scheduled-today ((t (:foreground "#98be65" :weight bold))))
- 
- ;; Org TODO keywords
- '(org-todo ((t (:foreground "#ff6c6b" :weight bold))))
- '(org-done ((t (:foreground "#98be65" :weight bold)))))
-
-=======
- '(org-scheduled ((t (:foreground "#2843fb"))))
- '(org-scheduled-previously ((t (:foreground "#ff6c6b" :weight bold))))
  '(org-scheduled-today ((t (:foreground "#98be65" :weight bold)))))
->>>>>>> 168b1fc (Changed todo to incorporate a scheduel)
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(custom-safe-themes
-   '("0325a6b5eea7e5febae709dab35ec8648908af12cf2d2b569bedc8da0a3a81c1"
-     default))
- '(org-agenda-files
-   '("/Users/rosspearlstone/Documents/Org/bookmarks.org"
-     "/Users/rosspearlstone/Documents/Org/calendar.org"
-     "/Users/rosspearlstone/Documents/Org/contacts.org"
-     "/Users/rosspearlstone/Documents/Org/done.org"
-     "/Users/rosspearlstone/Documents/Org/gcal.org"
-     "/Users/rosspearlstone/Documents/Org/general.org"
-     "/Users/rosspearlstone/Documents/Org/health.org"
-     "/Users/rosspearlstone/Documents/Org/ideas.org"
-     "/Users/rosspearlstone/Documents/Org/inbox.org"
-     "/Users/rosspearlstone/Documents/Org/journal.org"
-     "/Users/rosspearlstone/Documents/Org/notes.org"
-     "/Users/rosspearlstone/Documents/Org/projects.org"
-     "/Users/rosspearlstone/Documents/Org/rosspearl-gcal.org"
-     "/Users/rosspearlstone/Documents/Org/todo.org"
-     "/Users/rosspearlstone/Documents/Org/travel.org"))
- '(package-selected-packages
-   '(all-the-icons-dired avy calfw-org cargo company-box consult
-			 dashboard doom-modeline doom-themes
-			 eglot-booster evil-collection evil-org
-			 evil-surround general magit marginalia
-			 markdown-preview-mode mixed-pitch olivetti
-			 orderless org-contacts org-gcal org-modern
-			 org-roam org-roam-ui pdf-tools rust-mode
-			 treesit-auto vertico vterm yasnippet-snippets))
+ '(package-selected-packages '(eglot-booster))
  '(package-vc-selected-packages
    '((eglot-booster :url "https://github.com/jdtsmith/eglot-booster"))))
