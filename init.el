@@ -350,6 +350,10 @@
     "mp"  '(markdown-preview-mode :which-key "preview")
     "mt"  '(markdown-toggle-markup-hiding :which-key "toggle markup")))
 
+
+;; Hide the emacsclient message
+(setq server-client-instructions nil)
+
 ;; ============================================================================
 ;; COMPLETION FRAMEWORK (VERTICO + ORDERLESS + MARGINALIA)
 ;; ============================================================================
@@ -868,6 +872,22 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(package-selected-packages '(eglot-booster))
+ '(org-agenda-files
+   '("/Users/rosspearlstone/Documents/Org/bookmarks.org"
+     "/Users/rosspearlstone/Documents/Org/calendar.org"
+     "/Users/rosspearlstone/Documents/Org/contacts.org"
+     "/Users/rosspearlstone/Documents/Org/done.org"
+     "/Users/rosspearlstone/Documents/Org/gcal.org"
+     "/Users/rosspearlstone/Documents/Org/general.org"
+     "/Users/rosspearlstone/Documents/Org/health.org"
+     "/Users/rosspearlstone/Documents/Org/ideas.org"
+     "/Users/rosspearlstone/Documents/Org/inbox.org"
+     "/Users/rosspearlstone/Documents/Org/journal.org"
+     "/Users/rosspearlstone/Documents/Org/notes.org"
+     "/Users/rosspearlstone/Documents/Org/projects.org"
+     "/Users/rosspearlstone/Documents/Org/rosspearl-gcal.org"
+     "/Users/rosspearlstone/Documents/Org/todo.org"
+     "/Users/rosspearlstone/Documents/Org/travel.org"))
+ '(package-selected-packages nil)
  '(package-vc-selected-packages
    '((eglot-booster :url "https://github.com/jdtsmith/eglot-booster"))))
